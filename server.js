@@ -13,6 +13,10 @@ Requirements:
    a. The status code.
    b. A description of the status code.
 
+
+
+  
+
 Example Responses:
 - For 200 (OK):
   Request: /status-info?code=200
@@ -49,6 +53,40 @@ Example Responses:
 List of Status Codes to Handle:
 200, 201, 204, 400, 401, 403, 404, 405, 429, 500, 502, 503, 504
 */
+const statusMessages = {
+  200: "OK: The request has succeeded. The meaning of this status depends on the HTTP method used.",
+  201: "Created: The request has been fulfilled and has resulted in the creation of a resource.",
+  204: "No Content: The server has successfully fulfilled the request and there is no additional content to send.",
+  400: "Bad Request: The server cannot process the request due to client-side errors (e.g., malformed syntax).",
+  401: "Unauthorized: The request requires authentication. The client must authenticate itself to get the requested response.",
+  403: "Forbidden: The server understands the request, but it refuses to authorize it.",
+  404: "Not Found: The server has not found anything matching the request URI. This is often caused by a missing page or resource.",
+  405: "Method Not Allowed: The method specified in the request is not allowed for the resource identified by the request URI.",
+  429: "Too Many Requests: The user has sent too many requests in a given amount of time.",
+  500: "Internal Server Error: The server encountered an unexpected condition that prevented it from fulfilling the request.",
+  502: "Bad Gateway: The server, while acting as a gateway or proxy, received an invalid response from an inbound server.",
+  503: "Service Unavailable: The server is currently unable to handle the request due to temporary overloading or maintenance of the server.",
+  504: "Gateway Timeout: The server, while acting as a gateway or proxy, did not receive a timely response from the upstream server."
+};
+
+// API endpoint to handle status code queries
+app.get('/status-info', (req, res) => {
+  // Extract the code from query parameters
+  const code = parseInt(req.query.code, 10);
+
+  // Check if the status code exists in the statusMessages object
+  if (statusMessages[code]) {
+    res.json({
+      status: code,
+      message: statusMessages[code]
+    });
+  } else {
+    res.status(400).json({
+      status: 400,
+      message: "Bad Request: Invalid or unsupported status code."
+    });
+  }
+});
 
 const PORT = 3000;
 app.listen(PORT, () => {
